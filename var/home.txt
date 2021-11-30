@@ -3,12 +3,18 @@
 {{COMPANY-NAME {{PAGE-TITLE}}}}
 {{POST-TITLE HTMixer}}
 ------------------------------------
-{{PAGE-SEG-NAME-0  }}
+{{PAGE-SEG-NAME-0 }}
 {{PAGE-SEG-NAME-1 About}}
 {{PAGE-SEG-NAME-2 Compile}}
 {{PAGE-SEG-NAME-3 Generate}}
 {{PAGE-SEG-NAME-4 Deploy}}
 ------------------------------------
 {{PAGE-SEG-TXT-1
-<p>It is about.</p>
+<p><a href="https://github.com/liyanboy74/htmixer"><b>HTMixer</b></a> is a Static HTML page generator.
+ This tool can combine different pages and add content to them.
+ Each content can be specific to one or more templates.
+ This tool is written in c language and can be used for any file, but customized for 
+ <a href="https://pages.github.com/">github pages</a>.
+</p>
+<div class="w3-center"><img src="./htmixer.png" class="w3-image"></div>
 }}

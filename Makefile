@@ -32,6 +32,10 @@ deploy:
 generate :
 	rm -rf $(generate-dir)
 	mkdir $(generate-dir)
+
+# Copy Doc
+	cp -r ./doc/htmixer.png ./$(generate-dir)/htmixer.png
+
 # Run Mixer
 	./build/htmixer ./$(generate-dir)/index.html -d ./doc/home.html -v ./var/home.txt
 
