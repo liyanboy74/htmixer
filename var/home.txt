@@ -1,0 +1,14 @@
+{{PAGE-TITLE HTMixer}}
+------------------------------------
+{{COMPANY-NAME {{PAGE-TITLE}}}}
+{{POST-TITLE HTMixer}}
+------------------------------------
+{{PAGE-SEG-NAME-0  }}
+{{PAGE-SEG-NAME-1 About}}
+{{PAGE-SEG-NAME-2 Compile}}
+{{PAGE-SEG-NAME-3 Generate}}
+{{PAGE-SEG-NAME-4 Deploy}}
+------------------------------------
+{{PAGE-SEG-TXT-1
+<p>It is about.</p>
+}}
