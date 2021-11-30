@@ -3,7 +3,6 @@
 {{COMPANY-NAME {{PAGE-TITLE}}}}
 {{POST-TITLE HTMixer}}
 ------------------------------------
-{{PAGE-SEG-NAME-0 }}
 {{PAGE-SEG-NAME-1 Introductions}}
 {{PAGE-SEG-NAME-2 Compile}}
 {{PAGE-SEG-NAME-3 Generate}}
