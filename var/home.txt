@@ -9,12 +9,39 @@
 {{PAGE-SEG-NAME-3 Generate}}
 {{PAGE-SEG-NAME-4 Deploy}}
 ------------------------------------
+{{TERMINAL-STYLE class="w3-border w3-black"><cc style="color: green;">> </cc}}
+------------------------------------
 {{PAGE-SEG-TXT-1
 <p><a href="https://github.com/liyanboy74/htmixer"><b>HTMixer</b></a> is a Static HTML page generator.
- This tool can combine different pages and add content to them.
- Each content can be specific to one or more templates.
- This tool is written in c language and can be used for any file, but customized for 
- <a href="https://pages.github.com/">github pages</a>.
+This tool can combine different pages and add content to them.
+Each content can be specific to one or more templates.
+This tool is written in c language and can be used for any file, but customized for
+<a href="https://pages.github.com/">Github Pages</a>.
 </p>
 <div class="w3-center"><img src="./htmixer.png" class="w3-image"></div>
 }}
+------------------------------------
+{{PAGE-SEG-TXT-2
+<p>This tool is written in C language and uses <a href="https://gcc.gnu.org/">GCC</a> and <a href="https://www.gnu.org/software/make/">Make</a>
+for compilation.</p>
+Compile <a href="https://github.com/liyanboy74/htmixer/blob/main/htmixer.c">HTMixer.c</a> :
+<div {{TERMINAL-STYLE}}>make</div>
+<p>After compile source, executable app will be generated in build folder, do not remove that!</p>
+}}
+------------------------------------
+{{PAGE-SEG-TXT-3
+<p>Generator use <a href="https://www.gnu.org/software/make/">Make</a> for running commands in the 
+<a href="https://github.com/liyanboy74/htmixer/blob/main/Makefile">Makefile</a>.
+</p>
+Generate :
+<div {{TERMINAL-STYLE}}>make generate</div>
+<p>In default the generated file stored in <b>gh-pages</b> folder, in head of Makefile you can changes the output folder.</p>
+}}
+------------------------------------
+{{PAGE-SEG-TXT-4
+<p>Deployment use <a href="https://pypi.org/project/ghp-import/">ghp-import</a> for <a href="https://pages.github.com/">Github Pages</a>.</p>
+Deployment :
+<div {{TERMINAL-STYLE}}>make deploy</div>
+<p>You can add <b>CNAME</b> by editing <b>Deploy</b> command in <a href="https://github.com/liyanboy74/htmixer/blob/main/Makefile">Makefile</a>.</p>
+}}
+------------------------------------
