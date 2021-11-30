@@ -4,7 +4,7 @@ Static HTML Page Generator.
 ## Introductions
 HTMixer is a Static HTML page generator. This tool can combine different pages and add content to them. Each content can be specific to one or more templates. This tool is written in c language and can be used for any file, but customized for Github Pages. 
 
-![htmixer](https://user-images.githubusercontent.com/64005694/144050591-0a888a34-46b5-452c-aace-df584f2ee9ba.png)
+![htmixer](./doc/htmixer.png)
 
 ## Compile
 This tool is written in `C` language and uses `GCC` and `Make` for compilation.
