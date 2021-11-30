@@ -45,3 +45,10 @@ Deployment :
 <p>You can add <b>CNAME</b> by editing <b>Deploy</b> command in <a href="https://github.com/liyanboy74/htmixer/blob/main/Makefile">Makefile</a>.</p>
 }}
 ------------------------------------
+------------------------------------
+{{SITE-CC 
+Powered by <a href="https://www.w3schools.com/w3css/default.asp" 
+title="W3.CSS" target="_blank" class="w3-hover-opacity">w3.css</a> & 
+<a href="https://github.com/liyanboy74/htmixer">HTMixer</a>
+}}
+------------------------------------
