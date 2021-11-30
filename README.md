@@ -43,7 +43,7 @@ Example use variable `home.html` :
 Loops set in doc To repeat its internal code.
 If the internal code use Variable, the Variable rename by loop counter.
 
-For example [ VAR -> VAR-0 , VAR-1 , VAR-2 , ... , VAR-N ].
+For example [`VAR`->`VAR-0`,`VAR-1`,`VAR-2`,`...`,`VAR-N`].
 
 Example `home.html` : 
  ```
@@ -64,9 +64,9 @@ Example `home.html` :
 This tool supports interdependent variables up to `five` steps.
 Example:
 ```
-{{`VAR1` You?}}
-{{`VAR2` Are {{VAR1}}}}
-{{`VAR3` How {{VAR2}}}}
+{{VAR1 You?}}
+{{VAR2 Are {{VAR1}}}}
+{{VAR3 How {{VAR2}}}}
 ```
 `VAR3` = `How Are You?`
 
