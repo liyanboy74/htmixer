@@ -124,6 +124,13 @@ Result:
 {{ VAR-1-0}} <br>
 {{ VAR-1-1}} <br>
 </div>
+<br>
+
+<h2>Note:</h2>
+<p>keep in mind that '<b>{{ </b>' and '<b>}}</b>' is a key command and should be used together!</p>
+<p>If you want to use it, you have to type a space immediately after it '<b>{{ SPACE</b>' , 
+so as not to be confused with variables. 
+Do not worry about space, because it does not affect the output. and finally, do not forget his friend! '<b>}}</b>' </p>
 }}
 ------------------------------------
 {{SITE-CC 

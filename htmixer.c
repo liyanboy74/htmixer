@@ -52,11 +52,19 @@ int search_var_list(char* Name)
 size_t get_me_out(char*buff)
 {
     size_t index=0;
-    int d=2;
+    int d=1;
     while(d!=0)
     {
-        if(buff[index]=='{')d++;
-        if(buff[index]=='}')d--;
+        if(buff[index]=='{'&&buff[index+1]=='{')
+        {
+            d++;
+            index++;
+        }
+        else if(buff[index]=='}'&&buff[index+1]=='}')
+        {
+            d--;
+            index++;
+        }
         index++;
     }
     return index-2;
