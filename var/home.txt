@@ -6,9 +6,9 @@
 {{PAGE-SEG-NAME-1 Introductions}}
 {{PAGE-SEG-NAME-2 Compile}}
 {{PAGE-SEG-NAME-3 Instructions}}
-{{PAGE-SEG-NAME-4 Generate}}
-{{PAGE-SEG-NAME-5 Deploy}}
-{{PAGE-SEG-NAME-6 Variable & Loop}}
+{{PAGE-SEG-NAME-4 Variable & Loop}}
+{{PAGE-SEG-NAME-5 Generate}}
+{{PAGE-SEG-NAME-6 Deploy}}
 {{PAGE-SEG-NAME-7 Capability}}
 ------------------------------------
 {{TERMINAL-STYLE class="w3-border w3-black"><cc style="color: green;">> </cc}}
@@ -35,8 +35,7 @@ Compile <a href="https://github.com/liyanboy74/htmixer/blob/main/htmixer.c">HTMi
 ------------------------------------
 {{PAGE-SEG-TXT-3
 <p>
-Use <b>./build/htmixer</b> for mix <b>Doc</b> and <b>Var</b> files.
-<a href="#read_more_var">Read more</a> about <b>Var</b>.</p>
+Use <b>./build/htmixer</b> for mix <b>Doc</b> and <b>Var</b> files.</p>
 Usage :
 <div {{CODE-STYLE}}>htmixer <b>OUTPUT_FILE</b> -v <b>VAR</b> -d <b>DOC</b></div>
 <br>
@@ -46,24 +45,8 @@ Example :
 }}
 ------------------------------------
 {{PAGE-SEG-TXT-4
-<p>Generator use <a href="https://www.gnu.org/software/make/">Make</a> for running commands in the 
-<a href="https://github.com/liyanboy74/htmixer/blob/main/Makefile">Makefile</a>.
-</p>
-Generate :
-<div {{TERMINAL-STYLE}}>make generate</div>
-<p>In default the generated file stored in <b>gh-pages</b> folder, in head of Makefile you can changes the output folder.</p>
-}}
-------------------------------------
-{{PAGE-SEG-TXT-5
-<p>Deployment use <a href="https://pypi.org/project/ghp-import/">ghp-import</a> for <a href="https://pages.github.com/">Github Pages</a>.</p>
-Deployment :
-<div {{TERMINAL-STYLE}}>make deploy</div>
-<p>You can add <b>CNAME</b> by editing <b>Deploy</b> command in <a href="https://github.com/liyanboy74/htmixer/blob/main/Makefile">Makefile</a>.</p>
-}}
-------------------------------------
-{{PAGE-SEG-TXT-6
 <p>Variable defined in <b>var</b> folder,but Loops defined in <b>doc</b> folder close to HTML files.</p>
-<h2 id="read_more_var">Variable:</h2>
+<h2>Variable:</h2>
 <p>Variables that are set in the <b>var</b> folder are replaced in the <b>doc</b> folder.</p>
 Example set variable <a href="https://github.com/liyanboy74/htmixer/blob/main/var/home.txt">home.txt</a> :
 <div {{CODE-STYLE}}>
@@ -92,6 +75,22 @@ Example <a href="https://github.com/liyanboy74/htmixer/blob/main/doc/home.html">
  2 Times from 1 to 2<br>
 }}<br>
 </div>
+}}
+------------------------------------
+{{PAGE-SEG-TXT-5
+<p>Generator use <a href="https://www.gnu.org/software/make/">Make</a> for running commands in the 
+<a href="https://github.com/liyanboy74/htmixer/blob/main/Makefile">Makefile</a>.
+</p>
+Generate :
+<div {{TERMINAL-STYLE}}>make generate</div>
+<p>In default the generated file stored in <b>gh-pages</b> folder, in head of Makefile you can changes the output folder.</p>
+}}
+------------------------------------
+{{PAGE-SEG-TXT-6
+<p>Deployment use <a href="https://pypi.org/project/ghp-import/">ghp-import</a> for <a href="https://pages.github.com/">Github Pages</a>.</p>
+Deployment :
+<div {{TERMINAL-STYLE}}>make deploy</div>
+<p>You can add <b>CNAME</b> by editing <b>Deploy</b> command in <a href="https://github.com/liyanboy74/htmixer/blob/main/Makefile">Makefile</a>.</p>
 }}
 ------------------------------------
 {{PAGE-SEG-TXT-7
