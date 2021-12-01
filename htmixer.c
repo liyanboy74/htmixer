@@ -74,20 +74,22 @@ void catch_var_list(char * fileName)
     {
         if(buff[i]=='{'&& buff[i+1]=='{')
         {
-            i+=2;
-            for(k=0;buff[i]!='\n'&&buff[i]!='\r'&&buff[i]!='\t'&&buff[i]!=' '&&buff[i]!='}';k++,i++)
+            if(buff[i+2]!='\r'&&buff[i+2]!='\n'&&buff[i+2]!=' '&&buff[i+2]!='}')
             {
-                var_list[var_c].name[k]=buff[i];
+                i+=2;
+                for(k=0;buff[i]!='\n'&&buff[i]!='\r'&&buff[i]!='\t'&&buff[i]!=' '&&buff[i]!='}';k++,i++)
+                {
+                    var_list[var_c].name[k]=buff[i];
+                }
+                if(buff[i]!='}')i++;
+                if(buff[i]=='\r'||buff[i]=='\n')i++;
+                var_list[var_c].name[k]='\0';
+
+                var_list[var_c].size=get_me_out(&buff[i]);
+                var_list[var_c].loc=malloc(var_list[var_c].size);
+                memcpy(var_list[var_c].loc,&buff[i],var_list[var_c].size);
+                var_c++;
             }
-            if(buff[i]!='}')i++;
-            if(buff[i]=='\r'||buff[i]=='\n')i++;
-            var_list[var_c].name[k]='\0';
-
-            var_list[var_c].size=get_me_out(&buff[i]);
-            var_list[var_c].loc=malloc(var_list[var_c].size);
-            memcpy(var_list[var_c].loc,&buff[i],var_list[var_c].size);
-            var_c++;
-
         }
     }
     fclose(fp);
@@ -109,18 +111,79 @@ void replace_var_list(char * inputFileName,char* outputFileName)
     {
         if(buff[i]=='{'&& buff[i+1]=='{')
         {
-            i+=2;
-            for(k=0;buff[i]!='}';k++,i++)
+            if(buff[i+2]!='\r'&&buff[i+2]!='\n'&&buff[i+2]!='}'&&buff[i+2]!=' ')
             {
-                var_name[k]=buff[i];
-            }
-            var_name[k]='\0';
-            i++;
+                i+=2;
+                for(k=0;buff[i]!='}';k++,i++)
+                {
+                    var_name[k]=buff[i];
+                }
+                var_name[k]='\0';
+                i++;
 
-            ss=search_var_list(var_name);
-            if(ss!=-1)
+                ss=search_var_list(var_name);
+                if(ss!=-1)
+                {
+                    fwrite(var_list[ss].loc,var_list[ss].size,1,fpt);
+                }
+            }
+            else
             {
-                fwrite(var_list[ss].loc,var_list[ss].size,1,fpt);
+                fwrite(&buff[i],1,1,fpt);
+            }
+        }
+        else
+        {
+            fwrite(&buff[i],1,1,fpt);
+        }
+    }
+    fclose(fp);
+    fclose(fpt);
+}
+
+void latest_replace_var_list(char * inputFileName,char* outputFileName)
+{
+    FILE *fp,*fpt;
+    size_t s,i,k;
+
+    char var_name[SIZE_OF_NAME];
+    int ss=-1;
+
+    fp=fopen(inputFileName,"r");
+    fpt=fopen(outputFileName,"w");
+
+    s=fread(buff,1,SIZE_OF_BUFFER,fp);
+    for(i=0;i<s;i++)
+    {
+        if(buff[i]=='{'&& buff[i+1]=='{')
+        {
+            if(buff[i+2]!='\r'&&buff[i+2]!='\n'&&buff[i+2]!='}')
+            {
+                if(buff[i+2]!=' ')
+                {
+                    i+=2;
+                    for(k=0;buff[i]!='}';k++,i++)
+                    {
+                        var_name[k]=buff[i];
+                    }
+                    var_name[k]='\0';
+                    i++;
+
+                    ss=search_var_list(var_name);
+                    if(ss!=-1)
+                    {
+                        fwrite(var_list[ss].loc,var_list[ss].size,1,fpt);
+                    }
+                }
+                else//jump from space
+                {
+                    fwrite(&buff[i],1,2,fpt);
+                    i+=2;
+                }
+            }
+            else
+            {
+                fwrite(&buff[i],1,1,fpt);
             }
         }
         else
@@ -306,7 +369,7 @@ int main(int argc,char* argv[])
     replace_var_list(tmp1,tmp2);
     replace_var_list(tmp2,tmp1);
     replace_var_list(tmp1,tmp2);
-    replace_var_list(tmp2,genFileName);
+    latest_replace_var_list(tmp2,genFileName);
 
     remove(tmp1);
     remove(tmp2);

@@ -99,9 +99,9 @@ Example <a href="https://github.com/liyanboy74/htmixer/blob/main/doc/home.html">
 <p>This tool supports interdependent variables up to five steps.</p>
 Example:
 <div {{CODE-STYLE}}>
-&lcub;&lcub;VAR1  You?&rcub;&rcub;<br>
-&lcub;&lcub;VAR2  Are &lcub;&lcub;VAR1&rcub;&rcub;&rcub;&rcub;<br>
-&lcub;&lcub;VAR3  How &lcub;&lcub;VAR2&rcub;&rcub;&rcub;&rcub;<br>
+{{ VAR1  You?}} <br>
+{{ VAR2  Are {{ VAR1}}}} <br>
+{{ VAR3  How {{ VAR2}}}} <br>
 </div>
 VAR3 = How Are You?
 <br>
@@ -110,19 +110,19 @@ VAR3 = How Are You?
 <p>It is also allowed two Nested loop.</p>
 Example:
 <div {{CODE-STYLE}}>
-&lcub;&lcub;FOR(0,2)<br>
-&nbsp;&nbsp;&lcub;&lcub;FOR(0,2)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&lcub;&lcub;VAR&rcub;&rcub;<br>
-&nbsp;&nbsp;&rcub;&rcub;<br>
-&rcub;&rcub;
+{{ FOR(0,2)<br>
+&nbsp;&nbsp;{{ FOR(0,2)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;{{ VAR}}<br>
+&nbsp;&nbsp;}}<br>
+}}
 </div>
 
 Result:
 <div {{CODE-STYLE}}>
-&lcub;&lcub;VAR-0-0&rcub;&rcub;<br>
-&lcub;&lcub;VAR-0-1&rcub;&rcub;<br>
-&lcub;&lcub;VAR-1-0&rcub;&rcub;<br>
-&lcub;&lcub;VAR-1-1&rcub;&rcub;<br>
+{{ VAR-0-0}} <br>
+{{ VAR-0-1}} <br>
+{{ VAR-1-0}} <br>
+{{ VAR-1-1}} <br>
 </div>
 }}
 ------------------------------------
