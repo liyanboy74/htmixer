@@ -30,7 +30,7 @@ void print_var_list()
     int i,j;
     for(i=0;i<var_c;i++)
     {
-        printf("%d: %s[%d]\r\n",i,var_list[i].name,var_list[i].size);
+        printf("%d: %s[%ld]\r\n",i,var_list[i].name,var_list[i].size);
         for(j=0;j<var_list[i].size;j++)
         {
             putchar(var_list[i].loc[j]);
