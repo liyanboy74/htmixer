@@ -324,8 +324,8 @@ int main(int argc,char* argv[])
 
     char genFileName[SIZE_OF_NAME];
 
-    char tmp1[]="build/htmixer-tmp1.tmp";
-    char tmp2[]="build/htmixer-tmp2.tmp";
+    char tmp1[]="htmixer-tmp1.tmp";
+    char tmp2[]="htmixer-tmp2.tmp";
 
     for(j=1;argc>j;j++)
     {
