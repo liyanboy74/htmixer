@@ -30,7 +30,7 @@ for compilation.</p>
 <p>Compiled binary files for Windows and Ubuntu available in <a href="https://github.com/liyanboy74/htmixer/releases/latest">release</a> section.</p>
 Compile <a href="https://github.com/liyanboy74/htmixer/blob/main/htmixer.c">HTMixer.c</a> :
 <div {{TERMINAL-STYLE}}>make</div>
-<p>After compile source, executable app will be generated in build folder, do not remove that!</p>
+<p>After compile source, executable binary files will be generated in build folder, do not remove that!</p>
 }}
 ------------------------------------
 {{PAGE-SEG-TXT-3
