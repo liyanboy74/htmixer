@@ -1,8 +1,8 @@
 # Makefile Template for HTMixer
 # by liyanboy74
 
-htmixer         	= "../build/htmixer"
-generate-dir        = gh-pages
+htmixer		= "../build/htmixer"
+generate-dir	= gh-pages
 
 default : generate
 ##################################### GENARATE ########################################
