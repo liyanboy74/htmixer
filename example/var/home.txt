@@ -4,12 +4,11 @@
 {{POST-TITLE HTMixer}}
 ------------------------------------
 {{PAGE-SEG-NAME-1 Introductions}}
-{{PAGE-SEG-NAME-2 Compile}}
-{{PAGE-SEG-NAME-3 Instructions}}
-{{PAGE-SEG-NAME-4 Variable & Loop}}
-{{PAGE-SEG-NAME-5 Generate}}
-{{PAGE-SEG-NAME-6 Deploy}}
-{{PAGE-SEG-NAME-7 Capability}}
+{{PAGE-SEG-NAME-2 Instructions}}
+{{PAGE-SEG-NAME-3 Variable & Loop}}
+{{PAGE-SEG-NAME-4 Generate}}
+{{PAGE-SEG-NAME-5 Deploy}}
+{{PAGE-SEG-NAME-6 Capability}}
 ------------------------------------
 {{TERMINAL-STYLE class="w3-border w3-black"><cc style="color: green;">> </cc}}
 {{CODE-STYLE class="w3-border"}}
@@ -25,17 +24,8 @@ This tool is written in C language and can be used for any file, but customized 
 }}
 ------------------------------------
 {{PAGE-SEG-TXT-2
-<p>This tool is written in C language and uses <a href="https://gcc.gnu.org/">GCC</a> and <a href="https://www.gnu.org/software/make/">Make</a>
-for compilation.</p>
-<p>Compiled binary files for Windows and Ubuntu available in <a href="https://github.com/liyanboy74/htmixer/releases/latest">release</a> section.</p>
-Compile <a href="https://github.com/liyanboy74/htmixer/blob/main/htmixer.c">HTMixer.c</a> :
-<div {{TERMINAL-STYLE}}>make</div>
-<p>After compile source, executable binary files will be generated in build folder, do not remove that!</p>
-}}
-------------------------------------
-{{PAGE-SEG-TXT-3
 <p>
-Use <b>./build/htmixer</b> for mix <b>Doc</b> and <b>Var</b> files.</p>
+Use <b>htmixer</b> for mix <b>Doc</b> and <b>Var</b> files.</p>
 Usage :
 <div {{CODE-STYLE}}>htmixer <b>OUTPUT_FILE</b> -v <b>VAR</b> -d <b>DOC</b></div>
 <br>
@@ -44,16 +34,16 @@ Example :
  -v VAR1.txt VAR2.txt -d HEAD.html BODY.html FOOTER.html</div>
 }}
 ------------------------------------
-{{PAGE-SEG-TXT-4
+{{PAGE-SEG-TXT-3
 <p>Variable defined in <b>var</b> folder,but Loops defined in <b>doc</b> folder close to HTML files.</p>
 <h2>Variable:</h2>
 <p>Variables that are set in the <b>var</b> folder are replaced in the <b>doc</b> folder.</p>
-Example set variable <a href="https://github.com/liyanboy74/htmixer/blob/main/var/home.txt">home.txt</a> :
+Example set variable <a href="https://github.com/liyanboy74/htmixer/blob/main/example/var/home.txt">home.txt</a> :
 <div {{CODE-STYLE}}>
 &lcub;&lcub;PAGE-TITLE&nbsp;&nbsp; HTMixer&rcub;&rcub;
 </div>
 <br>
-Example use variable <a href="https://github.com/liyanboy74/htmixer/blob/main/doc/home.html">home.html</a> :
+Example use variable <a href="https://github.com/liyanboy74/htmixer/blob/main/example/doc/home.html">home.html</a> :
 <div {{CODE-STYLE}}>
 &lcub;&lcub;PAGE-TITLE&rcub;&rcub;
 </div>
@@ -63,7 +53,7 @@ Example use variable <a href="https://github.com/liyanboy74/htmixer/blob/main/do
 <p>Loops set in <b>doc</b> To repeat its internal code.<br>
 If the internal code use Variable, the Variable rename by loop counter.<br>
 For example [ VAR -> VAR-0 , VAR-1 , VAR-2 , ... , VAR-N ].</p>
-Example <a href="https://github.com/liyanboy74/htmixer/blob/main/doc/home.html">home.html</a> :
+Example <a href="https://github.com/liyanboy74/htmixer/blob/main/example/doc/home.html">home.html</a> :
 <div {{CODE-STYLE}}>
 {{ FOR(0,5)<br>
  5 Times from 0 to 4<br>
@@ -77,23 +67,23 @@ Example <a href="https://github.com/liyanboy74/htmixer/blob/main/doc/home.html">
 </div>
 }}
 ------------------------------------
-{{PAGE-SEG-TXT-5
+{{PAGE-SEG-TXT-4
 <p>Generator use <a href="https://www.gnu.org/software/make/">Make</a> for running commands in the 
-<a href="https://github.com/liyanboy74/htmixer/blob/main/Makefile">Makefile</a>.
+<a href="https://github.com/liyanboy74/htmixer/blob/main/example/Makefile">Makefile</a>.
 </p>
 Generate :
-<div {{TERMINAL-STYLE}}>make generate</div>
+<div {{TERMINAL-STYLE}}>make</div>
 <p>In default the generated file stored in <b>gh-pages</b> folder, in head of Makefile you can changes the output folder.</p>
 }}
 ------------------------------------
-{{PAGE-SEG-TXT-6
+{{PAGE-SEG-TXT-5
 <p>Deployment use <a href="https://pypi.org/project/ghp-import/">ghp-import</a> for <a href="https://pages.github.com/">Github Pages</a>.</p>
 Deployment :
 <div {{TERMINAL-STYLE}}>make deploy</div>
-<p>You can add <b>CNAME</b> by editing <b>Deploy</b> command in <a href="https://github.com/liyanboy74/htmixer/blob/main/Makefile">Makefile</a>.</p>
+<p>You can add <b>CNAME</b> by editing <b>Deploy</b> command in <a href="https://github.com/liyanboy74/htmixer/blob/main/example/Makefile">Makefile</a>.</p>
 }}
 ------------------------------------
-{{PAGE-SEG-TXT-7
+{{PAGE-SEG-TXT-6
 
 <h2>Variable:</h2>
 <p>This tool supports interdependent variables up to five steps.</p>
