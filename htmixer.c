@@ -103,7 +103,7 @@ void catch_var_list(char * fileName)
     fclose(fp);
 }
 
-void replace_var_list(char * inputFileName,char* outputFileName)
+void replace_var_list(char * FileName)
 {
     FILE *fp,*fpt;
     size_t s,i,k;
@@ -111,8 +111,10 @@ void replace_var_list(char * inputFileName,char* outputFileName)
     char var_name[SIZE_OF_NAME];
     int ss=-1;
 
-    fp=fopen(inputFileName,"r");
-    fpt=fopen(outputFileName,"w");
+    char Tempfile[]="rvl.tmp";
+
+    fp=fopen(FileName,"r");
+    fpt=fopen(Tempfile,"w");
 
     s=fread(buff,1,SIZE_OF_BUFFER,fp);
     for(i=0;i<s;i++)
@@ -147,9 +149,11 @@ void replace_var_list(char * inputFileName,char* outputFileName)
     }
     fclose(fp);
     fclose(fpt);
+    remove(FileName);
+    rename(Tempfile,FileName);
 }
 
-void latest_replace_var_list(char * inputFileName,char* outputFileName)
+void latest_replace_var_list(char * FileName)
 {
     FILE *fp,*fpt;
     size_t s,i,k;
@@ -157,8 +161,10 @@ void latest_replace_var_list(char * inputFileName,char* outputFileName)
     char var_name[SIZE_OF_NAME];
     int ss=-1;
 
-    fp=fopen(inputFileName,"r");
-    fpt=fopen(outputFileName,"w");
+    char TempFile[]="lrvl.tmp";
+
+    fp=fopen(FileName,"r");
+    fpt=fopen(TempFile,"w");
 
     s=fread(buff,1,SIZE_OF_BUFFER,fp);
     for(i=0;i<s;i++)
@@ -201,9 +207,11 @@ void latest_replace_var_list(char * inputFileName,char* outputFileName)
     }
     fclose(fp);
     fclose(fpt);
+    remove(FileName);
+    rename(TempFile,FileName);
 }
 
-void cheack_loops(char * inputFileName,char* outputFileName)
+void cheack_loops(char * FileName)
 {
     FILE *fp,*fpt;
     size_t s,i,k,l;
@@ -215,8 +223,10 @@ void cheack_loops(char * inputFileName,char* outputFileName)
     char CBuff[SIZE_OF_NAME];
     int for_f=0,for_c=0;
 
-    fpt=fopen(outputFileName,"w");
-    fp=fopen(inputFileName,"r");
+    char TempFile[]="cl.tmp";
+
+    fp=fopen(FileName,"r");
+    fpt=fopen(TempFile,"w");
 
     s=fread(buff,1,SIZE_OF_BUFFER,fp);
 
@@ -286,6 +296,8 @@ void cheack_loops(char * inputFileName,char* outputFileName)
     }
     fclose(fp);
     fclose(fpt);
+    remove(FileName);
+    rename(TempFile,FileName);
 }
 
 void clear_var_list()
@@ -300,15 +312,16 @@ void clear_var_list()
 void cat_files(FILE *fpt,char * fileName)
 {
     FILE *fp;
-    size_t s,i;
+    size_t s;
 
-    fp=fopen(fileName,"r");
-    s=fread(buff,1,SIZE_OF_BUFFER,fp);
-    for(i=0;i<s;i++)
+    if(fp=fopen(fileName,"r"),fp!=NULL)
     {
-        fwrite(&buff[i],1,1,fpt);
+        while (s=fread(buff,1,SIZE_OF_BUFFER,fp),s>0)
+        {
+            fwrite(buff,1,s,fpt);
+        }
+        fclose(fp);
     }
-    fclose(fp);
 }
 
 int main(int argc,char* argv[])
@@ -322,10 +335,7 @@ int main(int argc,char* argv[])
     char var[MAX_INPUT_FILE][SIZE_OF_NAME];
     char doc[MAX_INPUT_FILE][SIZE_OF_NAME];
 
-    char genFileName[SIZE_OF_NAME];
-
-    char tmp1[]="htmixer-tmp1.tmp";
-    char tmp2[]="htmixer-tmp2.tmp";
+    char genFileName[SIZE_OF_NAME]="\0";
 
     for(j=1;argc>j;j++)
     {
@@ -356,31 +366,36 @@ int main(int argc,char* argv[])
         }
     }
 
-    for(j=0;j<var_c;j++)
+    if(genFileName[0]!='\0')
     {
-        catch_var_list(var[j]);
+        for(j=0;j<var_c;j++)
+        {
+            catch_var_list(var[j]);
+        }
+        //print_var_list();
+
+        if(fpt=fopen(genFileName,"w"),fpt!=NULL)
+        {
+            for(j=0;j<doc_c;j++)
+            {
+                cat_files(fpt,doc[j]);
+            }
+            fclose(fpt);
+        }
+
+        for(j=0;j<2;j++)
+        {
+            cheack_loops(genFileName);
+        }
+
+        for(j=0;j<5;j++)
+        {
+            replace_var_list(genFileName);
+        }
+
+        latest_replace_var_list(genFileName);
+
+        clear_var_list();
     }
-    //print_var_list();
-
-    fpt=fopen(tmp1,"w");
-    for(j=0;j<doc_c;j++)
-    {
-        cat_files(fpt,doc[j]);
-    }
-    fclose(fpt);
-
-    cheack_loops(tmp1,tmp2);
-    cheack_loops(tmp2,tmp1);
-
-    replace_var_list(tmp1,tmp2);
-    replace_var_list(tmp2,tmp1);
-    replace_var_list(tmp1,tmp2);
-    replace_var_list(tmp2,tmp1);
-    replace_var_list(tmp1,tmp2);
-    latest_replace_var_list(tmp2,genFileName);
-
-    remove(tmp1);
-    remove(tmp2);
-    clear_var_list();
     return 0;
 }

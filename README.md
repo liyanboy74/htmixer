@@ -3,3 +3,17 @@ HTMixer is a Static HTML page generator. this tool can combine different pages a
 
 [Read More](https://liyanboy74.github.io/htmixer/)
 
+## Compile & Install
+```
+mkdir build
+cd build
+cmake -G "Unix Makefiles" ..
+make
+sudo make install
+```
+
+## Example Generate
+```
+cd ../example
+make
+```
