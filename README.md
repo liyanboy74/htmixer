@@ -12,8 +12,9 @@ make
 sudo make install
 ```
 
-## Example Generate
+## Example Generate & Deploy
 ```
 cd ../example
 make
+make deploy
 ```
