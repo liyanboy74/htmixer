@@ -216,7 +216,7 @@ void cheack_loops(char * FileName)
     FILE *fp,*fpt;
     size_t s,i,k,l;
 
-    int loop_s=0,loop_e=0,loop_c=0;
+    int loop_s=0,loop_e=0,loop_c=0,loop_p=0;
     size_t loop_start_loc,loop_end_loc;
     size_t len=0;
 
@@ -237,12 +237,12 @@ void cheack_loops(char * FileName)
             i+=2;
             if(strncmp(&buff[i],"FOR(",4)==0)
             {
-                sscanf(&buff[i],"FOR(%d,%d)",&loop_s,&loop_e);
+                sscanf(&buff[i],"FOR(%d,%d,%d)",&loop_s,&loop_e,&loop_p);
                 while(buff[i++]!=')');
                 len=get_me_out(&buff[i]);
                 loop_start_loc=i;
                 loop_end_loc=i+len;
-                for(loop_c=loop_s;loop_c<loop_e;loop_c++,for_f=0,for_c=0)
+                for(loop_c=loop_s;loop_c!=loop_e;for_f=0,for_c=0)
                 {
                     for(k=0;k<len;k++)
                     {
@@ -281,8 +281,12 @@ void cheack_loops(char * FileName)
                         }
                         else fwrite(&buff[i+k],1,1,fpt);
                     }
+
+                    if(loop_p==0)loop_c++;
+                    else loop_c+=loop_p;
                 }
                 i=loop_end_loc+2;
+                loop_p=0;
             }
             else
             {
