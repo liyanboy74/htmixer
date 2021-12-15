@@ -56,13 +56,13 @@ For example [ VAR -> VAR-0 , VAR-1 , VAR-2 , ... , VAR-N ].</p>
 Example <a href="https://github.com/liyanboy74/htmixer/blob/main/example/doc/home.html">home.html</a> :
 <div {{CODE-STYLE}}>
 {{ FOR(0,5)<br>
- 5 Times from 0 to 4<br>
+ //5 Times from 0 to 4<br>
 }}<br><br>
-{{ FOR(5,6)<br>
- 1 Times 5<br>
+{{ FOR(5,0,-1)<br>
+ //5 Times from 5 to 1<br>
 }}<br><br>
 {{ FOR(1,3)<br>
- 2 Times from 1 to 2<br>
+ //2 Times from 1 to 2<br>
 }}<br>
 </div>
 }}
