@@ -235,13 +235,16 @@ void cheack_loops(char * FileName)
         if(buff[i]=='{'&& buff[i+1]=='{')
         {
             i+=2;
+            //FOR Detector
             if(strncmp(&buff[i],"FOR(",4)==0)
             {
+                //Optional 'loop_p' , Default ++
                 sscanf(&buff[i],"FOR(%d,%d,%d)",&loop_s,&loop_e,&loop_p);
                 while(buff[i++]!=')');
                 len=get_me_out(&buff[i]);
                 loop_start_loc=i;
                 loop_end_loc=i+len;
+                //FOR
                 for(loop_c=loop_s;loop_c!=loop_e;for_f=0,for_c=0)
                 {
                     for(k=0;k<len;k++)
@@ -250,10 +253,12 @@ void cheack_loops(char * FileName)
                         {
                             if(strncmp(&buff[i+k+2],"FOR(",4)==0)
                             {
+                                //Internal FOR Detect
                                 for_f=1;
                             }
                             else
                             {
+                                //Internal Var of FOR
                                 if(for_f)for_c++;
                             }
                             fwrite(&buff[i+k],1,2,fpt);
@@ -261,16 +266,19 @@ void cheack_loops(char * FileName)
                         }
                         else if(buff[i+k]=='}'&&buff[i+k+1]=='}')
                         {
+                            //Add Counter for Internal Var
                             if(for_c)
                             {
                                 for_c--;
                                 sprintf(CBuff,"-%d}}",loop_c);
                             }
+                            //Close Internal FOR
                             else if(for_f)
                             {
                                 for_f--;
                                 strcpy(CBuff,"}}");
                             }
+                            //Add Counter for Var
                             else
                             {
                                 sprintf(CBuff,"-%d}}",loop_c);
