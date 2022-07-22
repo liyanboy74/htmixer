@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define SIZE_OF_BUFFER 0xfffff
+#define SIZE_OF_BUFFER 0x1fffff
 #define SIZE_OF_NAME 128
 #define MAX_VAR_NUM  65535
 #define MAX_INPUT_FILE 10
@@ -23,7 +23,7 @@ typedef struct
 my_var var_list[MAX_VAR_NUM];
 unsigned int var_c=0;
 
-char buff[SIZE_OF_BUFFER];
+char *buff;
 
 void print_var_list()
 {
@@ -73,34 +73,39 @@ size_t get_me_out(char*buff)
 void catch_var_list(char * fileName)
 {
     FILE *fp;
-    char buff[SIZE_OF_BUFFER];
+    char *buff;
     size_t s,i,k;
 
-    fp=fopen(fileName,"r");
-    s=fread(buff,1,SIZE_OF_BUFFER,fp);
-    for(i=0;i<s;i++)
+    buff=(char*)malloc(SIZE_OF_BUFFER);
+    if(buff!=NULL)
     {
-        if(buff[i]=='{'&& buff[i+1]=='{')
+        fp=fopen(fileName,"r");
+        s=fread(buff,1,SIZE_OF_BUFFER,fp);
+        for(i=0;i<s;i++)
         {
-            if(buff[i+2]!='\r'&&buff[i+2]!='\n'&&buff[i+2]!=' '&&buff[i+2]!='}')
+            if(buff[i]=='{'&& buff[i+1]=='{')
             {
-                i+=2;
-                for(k=0;buff[i]!='\n'&&buff[i]!='\r'&&buff[i]!='\t'&&buff[i]!=' '&&buff[i]!='}';k++,i++)
+                if(buff[i+2]!='\r'&&buff[i+2]!='\n'&&buff[i+2]!=' '&&buff[i+2]!='}')
                 {
-                    var_list[var_c].name[k]=buff[i];
-                }
-                if(buff[i]!='}')i++;
-                if(buff[i]=='\r'||buff[i]=='\n')i++;
-                var_list[var_c].name[k]='\0';
+                    i+=2;
+                    for(k=0;buff[i]!='\n'&&buff[i]!='\r'&&buff[i]!='\t'&&buff[i]!=' '&&buff[i]!='}';k++,i++)
+                    {
+                        var_list[var_c].name[k]=buff[i];
+                    }
+                    if(buff[i]!='}')i++;
+                    if(buff[i]=='\r'||buff[i]=='\n')i++;
+                    var_list[var_c].name[k]='\0';
 
-                var_list[var_c].size=get_me_out(&buff[i]);
-                var_list[var_c].loc=malloc(var_list[var_c].size);
-                memcpy(var_list[var_c].loc,&buff[i],var_list[var_c].size);
-                var_c++;
+                    var_list[var_c].size=get_me_out(&buff[i]);
+                    var_list[var_c].loc=malloc(var_list[var_c].size);
+                    memcpy(var_list[var_c].loc,&buff[i],var_list[var_c].size);
+                    var_c++;
+                }
             }
         }
+        fclose(fp);
+        free(buff);
     }
-    fclose(fp);
 }
 
 void replace_var_list(char * FileName)
@@ -349,6 +354,9 @@ int main(int argc,char* argv[])
 
     char genFileName[SIZE_OF_NAME]="\0";
 
+    buff=(char*)malloc(SIZE_OF_BUFFER);
+    if (buff==NULL)return 1;
+
     for(j=1;argc>j;j++)
     {
         if(strcmp(argv[j],"-v")==0)
@@ -409,5 +417,7 @@ int main(int argc,char* argv[])
 
         clear_var_list();
     }
+
+    free(buff);
     return 0;
 }
