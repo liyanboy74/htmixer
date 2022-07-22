@@ -10,7 +10,7 @@
 
 #define SIZE_OF_BUFFER 0xfffff
 #define SIZE_OF_NAME 128
-#define MAX_VAR_NUM  128
+#define MAX_VAR_NUM  65535
 #define MAX_INPUT_FILE 10
 
 typedef struct
