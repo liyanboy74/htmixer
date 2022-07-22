@@ -18,3 +18,6 @@ cd ../example
 make
 make deploy
 ```
+
+## Other
+Use [SMG](https://github.com/liyanboy74/smg) for generate Sitemap.
