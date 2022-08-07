@@ -158,6 +158,49 @@ void replace_var_list(char * FileName)
     rename(Tempfile,FileName);
 }
 
+void replace_loop_counter_val(char * FileName)
+{
+    FILE *fp,*fpt;
+    size_t s,i=0,k=0,j=0;
+
+    char *p;
+
+    char var_name[SIZE_OF_NAME];
+    int ss=-1;
+
+    char Tempfile[]="rlc.tmp";
+
+    fp=fopen(FileName,"r");
+    fpt=fopen(Tempfile,"w");
+
+    s=fread(buff,1,SIZE_OF_BUFFER,fp);
+
+    while(p=strstr(buff+k,"{{FOR({{"),p!=NULL)
+    {
+        p+=8;//6+2
+        j=(p-2)-(buff+k);
+        fwrite(buff+k,1,j,fpt);
+        k+=j;
+
+        for(i=0;*p!='}';i++,p++)var_name[i]=*p;
+        var_name[i]='\0';
+        k+=(i+4);
+
+        ss=search_var_list(var_name);
+        if(ss!=-1)
+        {
+            fwrite(var_list[ss].loc,var_list[ss].size,1,fpt);
+        }
+    }
+
+    fwrite(buff+k,1,s-k,fpt);
+
+    fclose(fp);
+    fclose(fpt);
+    remove(FileName);
+    rename(Tempfile,FileName);
+}
+
 void latest_replace_var_list(char * FileName)
 {
     FILE *fp,*fpt;
@@ -402,6 +445,8 @@ int main(int argc,char* argv[])
             }
             fclose(fpt);
         }
+
+        replace_loop_counter_val(genFileName);
 
         for(j=0;j<2;j++)
         {
