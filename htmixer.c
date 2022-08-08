@@ -13,7 +13,7 @@
 #define MAX_VAR_NUM  65535
 #define MAX_INPUT_FILE 10
 
-#define DEBUG 1
+#define DEBUG 0
 
 typedef struct
 {
@@ -114,28 +114,29 @@ void catch_var_list(char * fileName)
     free(lbuff);
 }
 
-void replace_loop_counter_val(char * FileName)
+void replace_loop_counter_val()
 {
     FILE *fp,*fpt;
     size_t s,i,k=0,j=0;
 
     char *p;
+    char *lbuff;
+    size_t lbuff_len=0;
 
     char var_name[SIZE_OF_NAME];
     int ss=-1;
 
-    char Tempfile[]="rlc.tmp";
+    lbuff=(char*)malloc(SIZE_OF_BUFFER);
+    if(lbuff==NULL)return;
 
-    fp=fopen(FileName,"r");
-    fpt=fopen(Tempfile,"w");
-
-    s=fread(buff,1,SIZE_OF_BUFFER,fp);
+    s=buff_len;
 
     while(p=strstr(buff+k,"{{FOR({{"),p!=NULL)
     {
         p+=8;//6+2
         j=(p-2)-(buff+k);
-        fwrite(buff+k,1,j,fpt);
+        memcpy(lbuff+lbuff_len,buff+k,j);
+        lbuff_len+=j;
         k+=j;
 
         if(*p!='\r'&&*p!='\n'&&*p!='}'&&*p!=' ')
@@ -146,17 +147,19 @@ void replace_loop_counter_val(char * FileName)
             ss=search_var_list(var_name);
             if(ss!=-1)
             {
-                fwrite(var_list[ss].loc,var_list[ss].size,1,fpt);
+                memcpy(lbuff+lbuff_len,var_list[ss].loc,var_list[ss].size);
+                lbuff_len+=var_list[ss].size;
             }
         }
     }
 
-    fwrite(buff+k,1,s-k,fpt);
+    memcpy(lbuff+lbuff_len,buff+k,s-k);
+    lbuff_len+=(s-k);
 
-    fclose(fp);
-    fclose(fpt);
-    remove(FileName);
-    rename(Tempfile,FileName);
+    free(buff);
+    buff=lbuff;
+    buff_len=lbuff_len;
+    buff[lbuff_len]='\0';
 }
 
 void replace_var_list(unsigned char notLatest)
@@ -230,15 +233,16 @@ void cheack_loops(char * FileName)
     size_t loop_start_loc,loop_end_loc;
     size_t len=0;
 
+    char *lbuff;
+    size_t lbuff_len=0;
+
     char CBuff[SIZE_OF_NAME];
     int for_f=0,for_c=0;
 
-    char TempFile[]="cl.tmp";
+    lbuff=(char*)malloc(SIZE_OF_BUFFER);
+    if(lbuff==NULL)return;
 
-    fp=fopen(FileName,"r");
-    fpt=fopen(TempFile,"w");
-
-    s=fread(buff,1,SIZE_OF_BUFFER,fp);
+    s=buff_len;
 
     for(i=0;i<s;i++)
     {
@@ -271,7 +275,9 @@ void cheack_loops(char * FileName)
                                 //Internal Var of FOR
                                 if(for_f)for_c++;
                             }
-                            fwrite(&buff[i+k],1,2,fpt);
+                            //fwrite(&buff[i+k],1,2,fpt);
+                            memcpy(lbuff+lbuff_len,&buff[i+k],2);
+                            lbuff_len+=2;
                             k+=1;
                         }
                         else if(buff[i+k]=='}'&&buff[i+k+1]=='}')
@@ -294,10 +300,16 @@ void cheack_loops(char * FileName)
                                 sprintf(CBuff,"-%d}}",loop_c);
                             }
                             l=strlen(CBuff);
-                            fwrite(CBuff,l,1,fpt);
+                            //fwrite(CBuff,l,1,fpt);
+                            memcpy(lbuff+lbuff_len,CBuff,l);
+                            lbuff_len+=l;
                             k+=1;
                         }
-                        else fwrite(&buff[i+k],1,1,fpt);
+                        else //fwrite(&buff[i+k],1,1,fpt);
+                        {
+                            memcpy(lbuff+lbuff_len,&buff[i+k],1);
+                            lbuff_len+=1;
+                        }
                     }
 
                     if(loop_p==0)loop_c++;
@@ -308,18 +320,23 @@ void cheack_loops(char * FileName)
             }
             else
             {
-                fwrite(&buff[(i-2)],1,(size_t)3,fpt);
+                //fwrite(&buff[(i-2)],1,(size_t)3,fpt);
+                memcpy(lbuff+lbuff_len,&buff[i-2],3);
+                lbuff_len+=3;
             }
         }
         else
         {
-            fwrite(&buff[i],1,1,fpt);
+            //fwrite(&buff[i],1,1,fpt);
+            memcpy(lbuff+lbuff_len,&buff[i],1);
+            lbuff_len+=1;
         }
     }
-    fclose(fp);
-    fclose(fpt);
-    remove(FileName);
-    rename(TempFile,FileName);
+
+    free(buff);
+    buff=lbuff;
+    buff_len=lbuff_len;
+    buff[lbuff_len]='\0';
 }
 
 void clear_var_list()
@@ -407,12 +424,12 @@ int main(int argc,char* argv[])
 
         if(DEBUG) printf("Cat Buff len is %d Byte.\r\n",buff_len);
 
-        //replace_loop_counter_val(genFileName);
+        replace_loop_counter_val();
 
-        // for(j=0;j<2;j++)
-        // {
-        //     cheack_loops(genFileName);
-        // }
+        for(j=0;j<2;j++)
+        {
+            cheack_loops(genFileName);
+        }
 
         j=5;
         while(j--)
