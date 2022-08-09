@@ -275,7 +275,6 @@ void cheack_loops(char * FileName)
                                 //Internal Var of FOR
                                 if(for_f)for_c++;
                             }
-                            //fwrite(&buff[i+k],1,2,fpt);
                             memcpy(lbuff+lbuff_len,&buff[i+k],2);
                             lbuff_len+=2;
                             k+=1;
@@ -300,12 +299,11 @@ void cheack_loops(char * FileName)
                                 sprintf(CBuff,"-%d}}",loop_c);
                             }
                             l=strlen(CBuff);
-                            //fwrite(CBuff,l,1,fpt);
                             memcpy(lbuff+lbuff_len,CBuff,l);
                             lbuff_len+=l;
                             k+=1;
                         }
-                        else //fwrite(&buff[i+k],1,1,fpt);
+                        else
                         {
                             memcpy(lbuff+lbuff_len,&buff[i+k],1);
                             lbuff_len+=1;
@@ -320,14 +318,12 @@ void cheack_loops(char * FileName)
             }
             else
             {
-                //fwrite(&buff[(i-2)],1,(size_t)3,fpt);
                 memcpy(lbuff+lbuff_len,&buff[i-2],3);
                 lbuff_len+=3;
             }
         }
         else
         {
-            //fwrite(&buff[i],1,1,fpt);
             memcpy(lbuff+lbuff_len,&buff[i],1);
             lbuff_len+=1;
         }
