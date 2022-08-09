@@ -13,7 +13,7 @@
 #define MAX_VAR_NUM  65535
 #define MAX_INPUT_FILE 10
 
-#define DEBUG 1
+#define DEBUG 0
 
 typedef struct{
     char* buff;
@@ -257,14 +257,69 @@ my_buff_s* remove_space(my_buff_s* buff)
 
 my_buff_s* cheack_loops(my_buff_s* buff)
 {
+    size_t h,l,i,s,t,k=0,j=0;
+
+    char *p;
     my_buff_s* lbuff=my_buff_init();
+    char var_name[SIZE_OF_NAME];
+    int ss=-1;
 
+    char CBuff[SIZE_OF_NAME];
 
+    int loop_s=0,loop_e=0,loop_c=0,loop_p=0;
+    char *loop_start_loc,*loop_end_loc;
+
+    s=buff->len;
+
+    while(p=strstr(buff->buff+k,"{{FOR("),p!=NULL)
+    {
+        j=p-(buff->buff+k);
+        memcpy(lbuff->buff+lbuff->len,buff->buff+k,j);
+        lbuff->len+=j;
+        k+=j;
+
+        for(j=0;*(p+j)!=')';j++);j++;
+        k+=j;
+        l=get_me_out(p+j);
+
+        loop_start_loc=(char*)(p+j);
+        loop_end_loc=(char*)(loop_start_loc+l);
+
+        sscanf(p+2,"FOR(%d,%d,%d)",&loop_s,&loop_e,&loop_p);
+
+        if(DEBUG)printf("FOR Detected! - [%d] - [%d,%d,%d]\r\n",l,loop_s,loop_e,loop_p);
+
+        for(loop_c=loop_s;loop_c!=loop_e;)
+        {
+            for(h=0;h<l;)
+            {
+                if(*(loop_start_loc+h)=='}'&&*(loop_start_loc+h+1)=='}')
+                {
+                    sprintf(CBuff,"-%d}}",loop_c);
+                    t=strlen(CBuff);
+                    memcpy(lbuff->buff+lbuff->len,CBuff,t);
+                    lbuff->len+=t;
+                    h+=2;
+                }
+                else
+                {
+                    memcpy(lbuff->buff+lbuff->len,loop_start_loc+h,1);
+                    lbuff->len+=1;
+                    h++;
+                }
+            }
+            if(loop_p==0)loop_c++;
+            else loop_c+=loop_p;
+        }
+        k+=(l+2);//Skip "}}"
+    }
+
+    memcpy(lbuff->buff+lbuff->len,buff->buff+k,s-k);
+    lbuff->len+=(s-k);
 
     lbuff->buff[lbuff->len]='\0';
     my_buff_deinit(buff);
     return lbuff;
-
 }
 
 void clear_var_list()
@@ -355,7 +410,7 @@ int main(int argc,char* argv[])
 
         buff=replace_loop_counter_val(buff);
 
-        for(j=0;j<1;j++)
+        for(j=0;j<3;j++)
         {
             buff=cheack_loops(buff);
         }

@@ -14,7 +14,7 @@ sudo make install
 
 ## Example Generate & Deploy
 ```
-cd ../example/01-hello-world
+cd ../example/01
 make
 make deploy
 ```
