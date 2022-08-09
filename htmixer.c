@@ -13,7 +13,12 @@
 #define MAX_VAR_NUM  65535
 #define MAX_INPUT_FILE 10
 
-#define DEBUG 0
+#define DEBUG 1
+
+typedef struct{
+    char* buff;
+    size_t len;
+}my_buff_s;
 
 typedef struct
 {
@@ -25,8 +30,20 @@ typedef struct
 my_var var_list[MAX_VAR_NUM];
 unsigned int var_c=0;
 
-char *buff;
-size_t buff_len=0;
+my_buff_s* my_buff_init()
+{
+    my_buff_s* buff;
+    buff=(my_buff_s*)malloc(sizeof(my_buff_s));
+    buff->len=0;
+    buff->buff=(char*)malloc(SIZE_OF_BUFFER);
+    return buff;
+}
+
+void my_buff_deinit(my_buff_s* buff)
+{
+    free(buff->buff);
+    free(buff);
+}
 
 void print_var_list()
 {
@@ -78,65 +95,60 @@ void catch_var_list(char * fileName)
     FILE *fp;
     size_t s,i,k;
 
-    char *lbuff;
-    lbuff=(char*)malloc(SIZE_OF_BUFFER);
+    my_buff_s* lbuff=my_buff_init();
 
     fp=fopen(fileName,"r");
-    s=fread(lbuff,1,SIZE_OF_BUFFER,fp);
+    s=fread(lbuff->buff,1,SIZE_OF_BUFFER,fp);
     fclose(fp);
 
     for(i=0;i<s;i++)
     {
-        if(lbuff[i]=='{')
+        if(lbuff->buff[i]=='{')
         {
-            if(lbuff[i+1]=='{')
+            if(lbuff->buff[i+1]=='{')
             {
-                if(lbuff[i+2]!='\r'&&lbuff[i+2]!='\n'&&lbuff[i+2]!=' '&&lbuff[i+2]!='}')
+                if(lbuff->buff[i+2]!='\r'&&lbuff->buff[i+2]!='\n'&&lbuff->buff[i+2]!=' '&&lbuff->buff[i+2]!='}')
                 {
                     i+=2;
-                    for(k=0;lbuff[i]!='\n'&&lbuff[i]!='\r'&&lbuff[i]!='\t'&&lbuff[i]!=' '&&lbuff[i]!='}';k++,i++)
+                    for(k=0;lbuff->buff[i]!='\n'&&lbuff->buff[i]!='\r'&&lbuff->buff[i]!='\t'&&lbuff->buff[i]!=' '&&lbuff->buff[i]!='}';k++,i++)
                     {
-                        var_list[var_c].name[k]=lbuff[i];
+                        var_list[var_c].name[k]=lbuff->buff[i];
                     }
                     var_list[var_c].name[k]='\0';
 
-                    if(lbuff[i]=='}')continue;
-                    if(lbuff[i]=='\r'||lbuff[i]=='\n'||lbuff[i]==' ')i++; // Jump
+                    if(lbuff->buff[i]=='}')continue; // Empty Var
+                    if(lbuff->buff[i]=='\r'||lbuff->buff[i]=='\n'||lbuff->buff[i]==' ')i++; //Jump
 
-                    var_list[var_c].size=get_me_out(&lbuff[i]);
+                    var_list[var_c].size=get_me_out(&lbuff->buff[i]);
                     var_list[var_c].loc=malloc(var_list[var_c].size);
-                    memcpy(var_list[var_c].loc,&lbuff[i],var_list[var_c].size);
+                    memcpy(var_list[var_c].loc,&lbuff->buff[i],var_list[var_c].size);
                     var_c++;
                 }
             }
         }
     }
-    free(lbuff);
+    my_buff_deinit(lbuff);
 }
 
-void replace_loop_counter_val()
+my_buff_s* replace_loop_counter_val(my_buff_s* buff)
 {
     FILE *fp,*fpt;
     size_t s,i,k=0,j=0;
 
     char *p;
-    char *lbuff;
-    size_t lbuff_len=0;
+    my_buff_s* lbuff=my_buff_init();
 
     char var_name[SIZE_OF_NAME];
     int ss=-1;
 
-    lbuff=(char*)malloc(SIZE_OF_BUFFER);
-    if(lbuff==NULL)return;
+    s=buff->len;
 
-    s=buff_len;
-
-    while(p=strstr(buff+k,"{{FOR({{"),p!=NULL)
+    while(p=strstr(buff->buff+k,"{{FOR({{"),p!=NULL)
     {
         p+=8;//6+2
-        j=(p-2)-(buff+k);
-        memcpy(lbuff+lbuff_len,buff+k,j);
-        lbuff_len+=j;
+        j=(p-2)-(buff->buff+k);
+        memcpy(lbuff->buff+lbuff->len,buff->buff+k,j);
+        lbuff->len+=j;
         k+=j;
 
         if(*p!='\r'&&*p!='\n'&&*p!='}'&&*p!=' ')
@@ -147,43 +159,36 @@ void replace_loop_counter_val()
             ss=search_var_list(var_name);
             if(ss!=-1)
             {
-                memcpy(lbuff+lbuff_len,var_list[ss].loc,var_list[ss].size);
-                lbuff_len+=var_list[ss].size;
+                memcpy(lbuff->buff+lbuff->len,var_list[ss].loc,var_list[ss].size);
+                lbuff->len+=var_list[ss].size;
             }
         }
     }
 
-    memcpy(lbuff+lbuff_len,buff+k,s-k);
-    lbuff_len+=(s-k);
+    memcpy(lbuff->buff+lbuff->len,buff->buff+k,s-k);
+    lbuff->len+=(s-k);
 
-    free(buff);
-    buff=lbuff;
-    buff_len=lbuff_len;
-    buff[lbuff_len]='\0';
+    lbuff->buff[lbuff->len]='\0';
+    my_buff_deinit(buff);
+    return lbuff;
 }
 
-void replace_var_list(unsigned char notLatest)
+my_buff_s* replace_var_list(my_buff_s* buff)
 {
-    FILE *fp,*fpt;
     size_t s,i,k=0,j=0;
 
     char *p;
-    char *lbuff;
-    size_t lbuff_len=0;
-
+    my_buff_s* lbuff=my_buff_init();
     char var_name[SIZE_OF_NAME];
     int ss=-1;
 
-    lbuff=(char*)malloc(SIZE_OF_BUFFER);
-    if(lbuff==NULL)return;
+    s=buff->len;
 
-    s=buff_len;
-
-    while(p=strstr(buff+k,"{{"),p!=NULL)
+    while(p=strstr(buff->buff+k,"{{"),p!=NULL)
     {
-        j=p-(buff+k);
-        memcpy(lbuff+lbuff_len,buff+k,j);
-        lbuff_len+=j;
+        j=p-(buff->buff+k);
+        memcpy(lbuff->buff+lbuff->len,buff->buff+k,j);
+        lbuff->len+=j;
         k+=j;
 
         p+=2;
@@ -197,142 +202,69 @@ void replace_var_list(unsigned char notLatest)
             ss=search_var_list(var_name);
             if(ss!=-1)
             {
-                memcpy(lbuff+lbuff_len,var_list[ss].loc,var_list[ss].size);
-                lbuff_len+=var_list[ss].size;
+                memcpy(lbuff->buff+lbuff->len,var_list[ss].loc,var_list[ss].size);
+                lbuff->len+=var_list[ss].size;
             }
-        }
-        else if(*p==' ' && !notLatest) // Jump from Space!
-        {
-            memcpy(lbuff+lbuff_len,p-2,2);
-            lbuff_len+=2;
-            k+=3;
         }
         else
         {
-            memcpy(lbuff+lbuff_len,p-2,2);
-            lbuff_len+=2;
+            memcpy(lbuff->buff+lbuff->len,p-2,2);
+            lbuff->len+=2;
             k+=2;
         }
     }
 
-    memcpy(lbuff+lbuff_len,buff+k,s-k);
-    lbuff_len+=(s-k);
+    memcpy(lbuff->buff+lbuff->len,buff->buff+k,s-k);
+    lbuff->len+=(s-k);
 
-    free(buff);
-    buff=lbuff;
-    buff_len=lbuff_len;
-    buff[lbuff_len]='\0';
+    lbuff->buff[lbuff->len]='\0';
+    my_buff_deinit(buff);
+    return lbuff;
 }
 
-void cheack_loops(char * FileName)
+my_buff_s* remove_space(my_buff_s* buff)
 {
-    FILE *fp,*fpt;
-    size_t s,i,k,l;
+    size_t s,k=0,j=0;
 
-    int loop_s=0,loop_e=0,loop_c=0,loop_p=0;
-    size_t loop_start_loc,loop_end_loc;
-    size_t len=0;
+    char *p;
+    my_buff_s* lbuff=my_buff_init();
+    char var_name[SIZE_OF_NAME];
+    int ss=-1;
 
-    char *lbuff;
-    size_t lbuff_len=0;
+    s=buff->len;
 
-    char CBuff[SIZE_OF_NAME];
-    int for_f=0,for_c=0;
-
-    lbuff=(char*)malloc(SIZE_OF_BUFFER);
-    if(lbuff==NULL)return;
-
-    s=buff_len;
-
-    for(i=0;i<s;i++)
+    while(p=strstr(buff->buff+k,"{{"),p!=NULL)
     {
-        if(buff[i]=='{'&& buff[i+1]=='{')
-        {
-            i+=2;
-            //FOR Detector
-            if(strncmp(&buff[i],"FOR(",4)==0)
-            {
-                //Optional 'loop_p' , Default ++
-                sscanf(&buff[i],"FOR(%d,%d,%d)",&loop_s,&loop_e,&loop_p);
-                while(buff[i++]!=')');
-                len=get_me_out(&buff[i]);
-                loop_start_loc=i;
-                loop_end_loc=i+len;
-                //FOR
-                for(loop_c=loop_s;loop_c!=loop_e;for_f=0,for_c=0)
-                {
-                    for(k=0;k<len;k++)
-                    {
-                        if(buff[i+k]=='{'&&buff[i+k+1]=='{')
-                        {
-                            if(strncmp(&buff[i+k+2],"FOR(",4)==0)
-                            {
-                                //Internal FOR Detect
-                                for_f=1;
-                            }
-                            else
-                            {
-                                //Internal Var of FOR
-                                if(for_f)for_c++;
-                            }
-                            memcpy(lbuff+lbuff_len,&buff[i+k],2);
-                            lbuff_len+=2;
-                            k+=1;
-                        }
-                        else if(buff[i+k]=='}'&&buff[i+k+1]=='}')
-                        {
-                            //Add Counter for Internal Var
-                            if(for_c)
-                            {
-                                for_c--;
-                                sprintf(CBuff,"-%d}}",loop_c);
-                            }
-                            //Close Internal FOR
-                            else if(for_f)
-                            {
-                                for_f--;
-                                strcpy(CBuff,"}}");
-                            }
-                            //Add Counter for Var
-                            else
-                            {
-                                sprintf(CBuff,"-%d}}",loop_c);
-                            }
-                            l=strlen(CBuff);
-                            memcpy(lbuff+lbuff_len,CBuff,l);
-                            lbuff_len+=l;
-                            k+=1;
-                        }
-                        else
-                        {
-                            memcpy(lbuff+lbuff_len,&buff[i+k],1);
-                            lbuff_len+=1;
-                        }
-                    }
+        j=p-(buff->buff+k);
+        memcpy(lbuff->buff+lbuff->len,buff->buff+k,j);
+        lbuff->len+=j;
+        k+=j;
 
-                    if(loop_p==0)loop_c++;
-                    else loop_c+=loop_p;
-                }
-                i=loop_end_loc+2;
-                loop_p=0;
-            }
-            else
-            {
-                memcpy(lbuff+lbuff_len,&buff[i-2],3);
-                lbuff_len+=3;
-            }
-        }
-        else
-        {
-            memcpy(lbuff+lbuff_len,&buff[i],1);
-            lbuff_len+=1;
-        }
+        if(p[2]==' ')k+=3;
+        else k+=2;
+
+        memcpy(lbuff->buff+lbuff->len,p,2);
+        lbuff->len+=2;
     }
 
-    free(buff);
-    buff=lbuff;
-    buff_len=lbuff_len;
-    buff[lbuff_len]='\0';
+    memcpy(lbuff->buff+lbuff->len,buff->buff+k,s-k);
+    lbuff->len+=(s-k);
+
+    lbuff->buff[lbuff->len]='\0';
+    my_buff_deinit(buff);
+    return lbuff;
+}
+
+my_buff_s* cheack_loops(my_buff_s* buff)
+{
+    my_buff_s* lbuff=my_buff_init();
+
+
+
+    lbuff->buff[lbuff->len]='\0';
+    my_buff_deinit(buff);
+    return lbuff;
+
 }
 
 void clear_var_list()
@@ -344,16 +276,16 @@ void clear_var_list()
     }
 }
 
-void cat_and_catch_files(char * fileName)
+void cat_and_catch_files(my_buff_s *buff,char * fileName)
 {
     FILE *fp;
     size_t s;
 
     if(fp=fopen(fileName,"r"),fp!=NULL)
     {
-        while(s=fread(buff+buff_len,1,SIZE_OF_BUFFER,fp),s>0)
+        while(s=fread((char*)(buff->buff+buff->len),1,SIZE_OF_BUFFER,fp),s>0)
         {
-            buff_len+=s;
+            buff->len+=s;
         }
         fclose(fp);
     }
@@ -372,8 +304,9 @@ int main(int argc,char* argv[])
 
     char genFileName[SIZE_OF_NAME]="\0";
 
-    buff=(char*)malloc(SIZE_OF_BUFFER);
-    if (buff==NULL)return 1;
+    my_buff_s* buff=my_buff_init();
+
+    if(DEBUG)printf("Buff init OK - [%d]\r\n",buff->len);
 
     for(j=1;argc>j;j++)
     {
@@ -415,31 +348,32 @@ int main(int argc,char* argv[])
 
         for(j=0;j<doc_c;j++)
         {
-            cat_and_catch_files(doc[j]);
+            cat_and_catch_files(buff,doc[j]);
         }
 
-        if(DEBUG) printf("Cat Buff len is %d Byte.\r\n",buff_len);
+        if(DEBUG) printf("Cat Buff len is %d Byte.\r\n",buff->len);
 
-        replace_loop_counter_val();
+        buff=replace_loop_counter_val(buff);
 
-        for(j=0;j<2;j++)
+        for(j=0;j<1;j++)
         {
-            cheack_loops(genFileName);
+            buff=cheack_loops(buff);
         }
 
-        j=5;
-        while(j--)
+        for(j=0;j<5;j++)
         {
-            replace_var_list(j);
+            buff=replace_var_list(buff);
         }
+
+        buff=remove_space(buff);
 
         fp=fopen(genFileName,"w");
-        fwrite(buff,1,buff_len,fp);
+        fwrite(buff->buff,1,buff->len,fp);
         fclose(fp);
 
         clear_var_list();
     }
 
-    free(buff);
+    my_buff_deinit(buff);
     return 0;
 }
