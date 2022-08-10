@@ -1,7 +1,7 @@
 # Makefile Template for HTMixer
 # by liyanboy74
 
-htmixer		 =	"../../build/htmixer.exe"
+htmixer		 =	"../../build/htmixer"
 generate-dir =	out
 
 default : generate

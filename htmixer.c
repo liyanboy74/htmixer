@@ -13,6 +13,9 @@
 #define MAX_VAR_NUM  65535
 #define MAX_INPUT_FILE 10
 
+#define MAX_VAR_INTERDEPENDENT 5
+#define MAX_NESTED_LOOP 3
+
 #define DEBUG 0
 
 typedef struct{
@@ -413,12 +416,12 @@ int main(int argc,char* argv[])
 
         buff=replace_loop_counter_val(buff);
 
-        for(j=0;j<3;j++)
+        for(j=0;j<MAX_NESTED_LOOP;j++)
         {
             buff=cheack_loops(buff);
         }
 
-        for(j=0;j<5;j++)
+        for(j=0;j<MAX_VAR_INTERDEPENDENT;j++)
         {
             buff=replace_var_list(buff);
         }
