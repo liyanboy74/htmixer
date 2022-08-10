@@ -8,13 +8,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define SIZE_OF_BUFFER 0x1fffff
-#define SIZE_OF_NAME 128
-#define MAX_VAR_NUM  65535
-#define MAX_INPUT_FILE 10
+#define SIZE_OF_BUFFER          0x1fffff
+#define SIZE_OF_NAME            128
+#define MAX_VAR_NUM             65535
+#define MAX_INPUT_FILE          10
 
-#define MAX_VAR_INTERDEPENDENT 5
-#define MAX_NESTED_LOOP 3
+#define MAX_VAR_INTERDEPENDENT  5
+#define MAX_NESTED_LOOP         3
 
 #define DEBUG 0
 
