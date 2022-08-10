@@ -285,6 +285,7 @@ my_buff_s* cheack_loops(my_buff_s* buff)
         loop_start_loc=(char*)(p+j);
         loop_end_loc=(char*)(loop_start_loc+l);
 
+        loop_p=0;
         sscanf(p+2,"FOR(%d,%d,%d)",&loop_s,&loop_e,&loop_p);
 
         if(DEBUG)printf("FOR Detected! - [%d] - [%d,%d,%d]\r\n",l,loop_s,loop_e,loop_p);
