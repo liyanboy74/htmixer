@@ -19,5 +19,8 @@ make
 make deploy
 ```
 
-## Other
+## Sitemap
 Use [SMG](https://github.com/liyanboy74/smg) for generate Sitemap.
+
+## Real example
+View [source](https://github.com/ioelectro/ioelectro.github.io) of [ioelectro.ir](https://ioelectro.ir/) website!
