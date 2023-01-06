@@ -12,9 +12,6 @@ default : generate
 
 # Start Generate Static Web Pages
 generate :
-	rm -rf $(generate-dir)
-	mkdir $(generate-dir)
-
 # Run Mixer
 	$(htmixer) ./$(generate-dir)/index.html -d ./doc.html -v ./var.txt
 
