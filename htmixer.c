@@ -7,6 +7,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <time.h>
+#include <unistd.h>
 
 #define SIZE_OF_BUFFER          0x1fffff
 #define SIZE_OF_NAME            128
@@ -98,39 +101,43 @@ void catch_var_list(char * fileName)
     FILE *fp;
     size_t s,i,k;
 
-    my_buff_s* lbuff=my_buff_init();
-
     fp=fopen(fileName,"r");
-    s=fread(lbuff->buff,1,SIZE_OF_BUFFER,fp);
-    fclose(fp);
-
-    for(i=0;i<s;i++)
+    if(fp!=NULL)
     {
-        if(lbuff->buff[i]=='{')
+        my_buff_s* lbuff=my_buff_init();
+
+        s=fread(lbuff->buff,1,SIZE_OF_BUFFER,fp);
+        fclose(fp);
+
+        for(i=0;i<s;i++)
         {
-            if(lbuff->buff[i+1]=='{')
+            if(lbuff->buff[i]=='{')
             {
-                if(lbuff->buff[i+2]!='\r'&&lbuff->buff[i+2]!='\n'&&lbuff->buff[i+2]!=' '&&lbuff->buff[i+2]!='}')
+                if(lbuff->buff[i+1]=='{')
                 {
-                    i+=2;
-                    for(k=0;lbuff->buff[i]!='\n'&&lbuff->buff[i]!='\r'&&lbuff->buff[i]!='\t'&&lbuff->buff[i]!=' '&&lbuff->buff[i]!='}';k++,i++)
+                    if(lbuff->buff[i+2]!='\r'&&lbuff->buff[i+2]!='\n'&&lbuff->buff[i+2]!=' '&&lbuff->buff[i+2]!='}')
                     {
-                        var_list[var_c].name[k]=lbuff->buff[i];
+                        i+=2;
+                        for(k=0;lbuff->buff[i]!='\n'&&lbuff->buff[i]!='\r'&&lbuff->buff[i]!='\t'&&lbuff->buff[i]!=' '&&lbuff->buff[i]!='}';k++,i++)
+                        {
+                            var_list[var_c].name[k]=lbuff->buff[i];
+                        }
+                        var_list[var_c].name[k]='\0';
+
+                        if(lbuff->buff[i]=='}')continue; // Empty Var
+                        if(lbuff->buff[i]=='\r'||lbuff->buff[i]=='\n'||lbuff->buff[i]==' ')i++; //Jump
+
+                        var_list[var_c].size=get_me_out(&lbuff->buff[i]);
+                        var_list[var_c].loc=malloc(var_list[var_c].size);
+                        memcpy(var_list[var_c].loc,&lbuff->buff[i],var_list[var_c].size);
+                        var_c++;
                     }
-                    var_list[var_c].name[k]='\0';
-
-                    if(lbuff->buff[i]=='}')continue; // Empty Var
-                    if(lbuff->buff[i]=='\r'||lbuff->buff[i]=='\n'||lbuff->buff[i]==' ')i++; //Jump
-
-                    var_list[var_c].size=get_me_out(&lbuff->buff[i]);
-                    var_list[var_c].loc=malloc(var_list[var_c].size);
-                    memcpy(var_list[var_c].loc,&lbuff->buff[i],var_list[var_c].size);
-                    var_c++;
                 }
             }
         }
+        my_buff_deinit(lbuff);
     }
-    my_buff_deinit(lbuff);
+    else if(DEBUG)printf("Can't open %s\r\n",fileName);
 }
 
 my_buff_s* replace_loop_counter_val(my_buff_s* buff)
@@ -352,6 +359,98 @@ void cat_and_catch_files(my_buff_s *buff,char * fileName)
     }
 }
 
+int cont_slash(char dir[])
+{
+    int i,ret;
+    for(i=0,ret=0;i<strlen(dir);i++)
+    {
+        if(dir[i]=='/' || dir[i]=='\\')ret++;
+    }
+    return ret;
+}
+
+char * get_dir(char *dir)
+{
+    int i,s,j;
+    char * ret=malloc(strlen(dir));
+    strcpy(ret,dir);
+    j=cont_slash(dir);
+    if(j>1)
+    {
+        for(i=0,s=0;i<j;s++)
+        {
+            if(ret[s]=='/' || ret[s]=='\\')i++;
+        }
+        ret[s-1]='\0';
+    }
+    return ret;
+}
+
+int check_files_details(char genFileName[],char var[][SIZE_OF_NAME],char var_c,char doc[][SIZE_OF_NAME],char doc_c)
+{
+    int i;
+    struct stat filestat;
+    time_t gTime=0,fTime=0,TTime=0;
+
+    if(genFileName[0]=='\0')
+    {
+        printf("Error : output file name not found!\r\n");
+        return 1;
+    }
+
+    for(i=0;i<var_c;i++)
+    {
+        if(access(var[i],F_OK)!=0)
+        {
+            printf("Cant access to file [%s]\r\n",var[i]);
+            return 3;
+        }
+        else
+        {
+            stat(var[i],&filestat);
+            TTime=filestat.st_mtime;
+            if(TTime>fTime)fTime=TTime;
+        }
+    }
+
+    for(i=0;i<doc_c;i++)
+    {
+        if(access(doc[i],F_OK)!=0)
+        {
+            printf("Cant access to file [%s]\r\n",var[i]);
+            return 3;
+        }
+        else
+        {
+            stat(doc[i],&filestat);
+            TTime=filestat.st_mtime;
+            if(TTime>fTime)fTime=TTime;
+        }
+    }
+
+    if(access(genFileName,F_OK)!=0)
+    {
+        if(cont_slash(genFileName)>1)
+        {
+            char*dir=get_dir(genFileName);
+            if(DEBUG)printf("Make dir [%s]\r\n",dir);
+            mkdir(dir);
+        }
+        return 0;
+    }
+
+    stat(genFileName,&filestat);
+    gTime=filestat.st_mtime;
+
+    if(gTime>fTime)
+    {
+        printf("File [%s] Already up to date!\r\n",genFileName);
+        return 2;
+    }
+
+    return 0;
+}
+
 int main(int argc,char* argv[])
 {
     FILE *fp;
@@ -398,7 +497,7 @@ int main(int argc,char* argv[])
         }
     }
 
-    if(genFileName[0]!='\0')
+    if(!check_files_details(genFileName,var,var_c,doc,doc_c))
     {
         for(j=0;j<var_c;j++)
         {
@@ -434,7 +533,7 @@ int main(int argc,char* argv[])
             fwrite(buff->buff,1,buff->len,fp);
             fclose(fp);
         }
-        else printf("Can't open %s",genFileName);
+        else printf("Can't open file [%s]",genFileName);
 
         clear_var_list();
     }
