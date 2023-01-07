@@ -19,6 +19,8 @@
 #define MAX_VAR_INTERDEPENDENT  5
 #define MAX_NESTED_LOOP         3
 
+#define VERSION_INFO "HTMixer V0.7"
+
 typedef struct{
     char* buff;
     size_t len;
@@ -477,10 +479,20 @@ int main(int argc,char* argv[])
         {
             sel=2;
         }
-        else if(strncmp(argv[j],"-i",2)==0)
+        else if(strncmp(argv[j],"-l",2)==0)
         {
             print_info_level=argv[j][2]-'0';
             if(print_info_level>2)printf("Print info level set to %d \r\n",print_info_level);
+        }
+        else if(strcmp(argv[j],"--version")==0)
+        {
+            printf("%s\r\n",VERSION_INFO);
+            return 0;
+        }
+        else if(strcmp(argv[j],"-?")==0 || strcmp(argv[j],"-h")==0||strcmp(argv[j],"--help")==0)
+        {
+            printf("Help:\r\n-v [FILE]\tVar\r\n-d [FILE]\tDoc\r\n--version\tVersion\r\n-l[0-3]\t\tSet log level\r\n");
+            return 0;
         }
         else
         {
