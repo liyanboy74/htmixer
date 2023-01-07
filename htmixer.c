@@ -19,8 +19,6 @@
 #define MAX_VAR_INTERDEPENDENT  5
 #define MAX_NESTED_LOOP         3
 
-#define DEBUG 0
-
 typedef struct{
     char* buff;
     size_t len;
@@ -35,6 +33,7 @@ typedef struct
 
 my_var var_list[MAX_VAR_NUM];
 unsigned int var_c=0;
+int print_info_level=1;
 
 my_buff_s* my_buff_init()
 {
@@ -137,7 +136,7 @@ void catch_var_list(char * fileName)
         }
         my_buff_deinit(lbuff);
     }
-    else if(DEBUG)printf("Can't open %s\r\n",fileName);
+    else if(print_info_level>0)printf("Can't open %s\r\n",fileName);
 }
 
 my_buff_s* replace_loop_counter_val(my_buff_s* buff)
@@ -298,7 +297,7 @@ my_buff_s* cheack_loops(my_buff_s* buff)
         loop_p=0;
         sscanf(p+2,"FOR(%d,%d,%d)",&loop_s,&loop_e,&loop_p);
 
-        if(DEBUG)printf("FOR Detected! - [%d] - [%d,%d,%d]\r\n",l,loop_s,loop_e,loop_p);
+        if(print_info_level>2)printf("FOR Detected! - [%d] - [%d,%d,%d]\r\n",l,loop_s,loop_e,loop_p);
 
         for(loop_c=loop_s;loop_c!=loop_e;)
         {
@@ -394,7 +393,7 @@ int check_files_details(char genFileName[],char var[][SIZE_OF_NAME],char var_c,c
 
     if(genFileName[0]=='\0')
     {
-        printf("Error : output file name not found!\r\n");
+        if(print_info_level>0)printf("Error : Output file name not found!\r\n");
         return 1;
     }
 
@@ -402,7 +401,7 @@ int check_files_details(char genFileName[],char var[][SIZE_OF_NAME],char var_c,c
     {
         if(access(var[i],F_OK)!=0)
         {
-            printf("Cant access to file [%s]\r\n",var[i]);
+            if(print_info_level>0)printf("Cant access to file [%s]\r\n",var[i]);
             return 3;
         }
         else
@@ -417,7 +416,7 @@ int check_files_details(char genFileName[],char var[][SIZE_OF_NAME],char var_c,c
     {
         if(access(doc[i],F_OK)!=0)
         {
-            printf("Cant access to file [%s]\r\n",var[i]);
+            if(print_info_level>0)printf("Cant access to file [%s]\r\n",var[i]);
             return 3;
         }
         else
@@ -433,7 +432,7 @@ int check_files_details(char genFileName[],char var[][SIZE_OF_NAME],char var_c,c
         if(cont_slash(genFileName)>1)
         {
             char*dir=get_dir(genFileName);
-            if(DEBUG)printf("Make dir [%s]\r\n",dir);
+            if(print_info_level>2)printf("Make dir [%s]\r\n",dir);
             mkdir(dir);
         }
         return 0;
@@ -444,7 +443,7 @@ int check_files_details(char genFileName[],char var[][SIZE_OF_NAME],char var_c,c
 
     if(gTime>fTime)
     {
-        printf("File [%s] Already up to date!\r\n",genFileName);
+        if(print_info_level>0)printf("File [%s] Already up to date!\r\n",genFileName);
         return 2;
     }
 
@@ -466,7 +465,7 @@ int main(int argc,char* argv[])
 
     my_buff_s* buff=my_buff_init();
 
-    if(DEBUG)printf("Buff init OK - [%d]\r\n",buff->len);
+    if(print_info_level>2)printf("Buff init OK - [%d]\r\n",buff->len);
 
     for(j=1;argc>j;j++)
     {
@@ -477,6 +476,11 @@ int main(int argc,char* argv[])
         else if(strcmp(argv[j],"-d")==0)
         {
             sel=2;
+        }
+        else if(strncmp(argv[j],"-i",2)==0)
+        {
+            print_info_level=argv[j][2]-'0';
+            if(print_info_level>2)printf("Print info level set to %d \r\n",print_info_level);
         }
         else
         {
@@ -504,14 +508,14 @@ int main(int argc,char* argv[])
             catch_var_list(var[j]);
         }
 
-        if(DEBUG) print_var_list();
+        if(print_info_level>1) print_var_list();
 
         for(j=0;j<doc_c;j++)
         {
             cat_and_catch_files(buff,doc[j]);
         }
 
-        if(DEBUG) printf("Cat Buff len is %d Byte.\r\n",buff->len);
+        if(print_info_level>2) printf("Cat Buff len is %d Byte.\r\n",buff->len);
 
         buff=replace_loop_counter_val(buff);
 
@@ -533,7 +537,7 @@ int main(int argc,char* argv[])
             fwrite(buff->buff,1,buff->len,fp);
             fclose(fp);
         }
-        else printf("Can't open file [%s]",genFileName);
+        else if(print_info_level>0) printf("Can't open file [%s]",genFileName);
 
         clear_var_list();
     }
