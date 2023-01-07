@@ -360,7 +360,7 @@ void cat_and_catch_files(my_buff_s *buff,char * fileName)
     }
 }
 
-int cont_slash(char dir[])
+int cont_slash(char *dir)
 {
     int i,ret;
     for(i=0,ret=0;i<strlen(dir);i++)
@@ -370,7 +370,7 @@ int cont_slash(char dir[])
     return ret;
 }
 
-char * get_dir(char *dir)
+char *get_dir(char *dir)
 {
     int i,s,j;
     char * ret=malloc(strlen(dir));
@@ -387,7 +387,7 @@ char * get_dir(char *dir)
     return ret;
 }
 
-int check_files_details(char genFileName[],char var[][SIZE_OF_NAME],char var_c,char doc[][SIZE_OF_NAME],char doc_c)
+int check_files_details(char *genFileName,char *var,char var_c,char *doc,char doc_c)
 {
     int i;
     struct stat filestat;
@@ -401,14 +401,14 @@ int check_files_details(char genFileName[],char var[][SIZE_OF_NAME],char var_c,c
 
     for(i=0;i<var_c;i++)
     {
-        if(access(var[i],F_OK)!=0)
+        if(access(var+(i*SIZE_OF_NAME),F_OK)!=0)
         {
-            if(print_info_level>0)printf("Cant access to file [%s]\r\n",var[i]);
+            if(print_info_level>0)printf("Cant access to file [%s]\r\n",var+(i*SIZE_OF_NAME));
             return 3;
         }
         else
         {
-            stat(var[i],&filestat);
+            stat(var+(i*SIZE_OF_NAME),&filestat);
             TTime=filestat.st_mtime;
             if(TTime>fTime)fTime=TTime;
         }
@@ -416,14 +416,14 @@ int check_files_details(char genFileName[],char var[][SIZE_OF_NAME],char var_c,c
 
     for(i=0;i<doc_c;i++)
     {
-        if(access(doc[i],F_OK)!=0)
+        if(access(doc+(i*SIZE_OF_NAME),F_OK)!=0)
         {
-            if(print_info_level>0)printf("Cant access to file [%s]\r\n",var[i]);
+            if(print_info_level>0)printf("Cant access to file [%s]\r\n",doc+(i*SIZE_OF_NAME));
             return 3;
         }
         else
         {
-            stat(doc[i],&filestat);
+            stat(doc+(i*SIZE_OF_NAME),&filestat);
             TTime=filestat.st_mtime;
             if(TTime>fTime)fTime=TTime;
         }
@@ -436,6 +436,7 @@ int check_files_details(char genFileName[],char var[][SIZE_OF_NAME],char var_c,c
             char*dir=get_dir(genFileName);
             if(print_info_level>2)printf("Make dir [%s]\r\n",dir);
             mkdir(dir);
+            free(dir);
         }
         return 0;
     }
@@ -448,7 +449,6 @@ int check_files_details(char genFileName[],char var[][SIZE_OF_NAME],char var_c,c
         if(print_info_level>0)printf("File [%s] Already up to date!\r\n",genFileName);
         return 2;
     }
-
     return 0;
 }
 
@@ -513,7 +513,7 @@ int main(int argc,char* argv[])
         }
     }
 
-    if(!check_files_details(genFileName,var,var_c,doc,doc_c))
+    if(!check_files_details(genFileName,(char*)var,var_c,(char*)doc,doc_c))
     {
         for(j=0;j<var_c;j++)
         {
