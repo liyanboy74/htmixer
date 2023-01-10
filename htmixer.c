@@ -21,6 +21,30 @@
 
 #define VERSION_INFO "HTMixer V0.7"
 
+const char *HELP_INFO = "\
+---------------------------- HTMixer Help ----------------------------------\r\n\
+HTMixer is a Static HTML page generator. This tool can combine different pages and add content to them. \
+Content can be specific to one or more templates. \
+This tool is written in C language and can be used for any file, but customized for Github Pages.\r\n\
+More info at https://github.com/liyanboy74/htmixer .\r\n\r\n\
+COMMANDS:                                                                   \r\n\
+[FILE]          Output          Output file name                            \r\n\
+                                Ex: HTMixer ./blog/index.html               \r\n\
+                                                                            \r\n\
+-v [FILE]       Var             Name of file contains variable              \r\n\
+                                Ex: HTMixer -v home-text.txt blog-text.txt  \r\n\
+                                                                            \r\n\
+-d [FILE]       Doc             Name of file contains html,style or body    \r\n\
+                                Ex: HTMixer -d home.html shop.html          \r\n\
+                                                                            \r\n\
+--version       Version         Print version info                          \r\n\
+-l[0-3]         Set log level   Print more info while generating            \r\n\
+                                Ex: HTMixer -l1                             \r\n\
+                                Default set to 1                            \r\n\
+                                                                            \r\n\
+-?,-h,--help    Help            Print this list                             \r\n\
+---------------------------------- END -------------------------------------";
+
 typedef struct{
     char* buff;
     size_t len;
@@ -491,7 +515,7 @@ int main(int argc,char* argv[])
         }
         else if(strcmp(argv[j],"-?")==0 || strcmp(argv[j],"-h")==0||strcmp(argv[j],"--help")==0)
         {
-            printf("Help:\r\n-v [FILE]\tVar\r\n-d [FILE]\tDoc\r\n--version\tVersion\r\n-l[0-3]\t\tSet log level\r\n");
+            puts(HELP_INFO);
             return 0;
         }
         else
