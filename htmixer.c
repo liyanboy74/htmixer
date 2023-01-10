@@ -329,9 +329,11 @@ my_buff_s* cheack_loops(my_buff_s* buff)
         {
             for(h=0;h<l;)
             {
+                // Don't add loop counter at end of var name
                 if(*(loop_start_loc+h)=='}'&&*(loop_start_loc+h+1)=='}'&&\
                 *(loop_start_loc+h-1)!='}'&&*(loop_start_loc+h-1)!=' '&&*(loop_start_loc+h-1)!='\r'&&\
-                *(loop_start_loc+h-1)!='\n'&&*(loop_start_loc+h-1)!='\t'&&*(loop_start_loc+h-1)!='>')
+                *(loop_start_loc+h-1)!='\n'&&*(loop_start_loc+h-1)!='\t'&&*(loop_start_loc+h-1)!='>'&&\
+                *(loop_start_loc+h-1)!='#')
                 {
                     sprintf(CBuff,"-%d}}",loop_c);
                     t=strlen(CBuff);
