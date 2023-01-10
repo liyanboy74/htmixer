@@ -1,8 +1,9 @@
-/*
- HTMixer
- By Liyanboy74
- https://github.com/liyanboy74/htmixer
-*/
+/**
+ * @file HTMixer.c
+ * @author Liyanboy74 (https://github.com/liyanboy74/htmixer)
+ * @brief  Static HTML Page Generator
+ * @version v0.7
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
