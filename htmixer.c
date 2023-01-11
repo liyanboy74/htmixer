@@ -20,7 +20,7 @@
 #define MAX_VAR_INTERDEPENDENT  5
 #define MAX_NESTED_LOOP         3
 
-#define VERSION_INFO "HTMixer V0.7"
+#define VERSION_INFO "HTMixer V0.8"
 
 const char *HELP_INFO = "\
 ---------------------------- HTMixer Help ----------------------------------\r\n\
