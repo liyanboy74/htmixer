@@ -397,6 +397,15 @@ int cont_slash(char *dir)
     return ret;
 }
 
+int make_dir(char * path)
+{
+    #if defined(_WIN32)
+    return mkdir(path);
+    #else
+    return mkdir(path, 0777); // notice that 777 is different than 0777
+    #endif
+}
+
 int check_dir(char * path)
 {
     int i,s,j,t;
@@ -420,7 +429,7 @@ int check_dir(char * path)
                 i++;
                 temp=dir[s];
                 dir[s]='\0';
-                mkdir(dir);
+                make_dir(dir);
                 dir[s]=temp;
             }
         }
