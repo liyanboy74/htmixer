@@ -397,21 +397,37 @@ int cont_slash(char *dir)
     return ret;
 }
 
-char *get_dir(char *dir)
+int check_dir(char * path)
 {
-    int i,s,j;
-    char * ret=malloc(strlen(dir));
-    strcpy(ret,dir);
-    j=cont_slash(dir);
+    int i,s,j,t;
+    char dir[SIZE_OF_NAME];
+    char temp;
+
+    // File exist
+    if(access(path,F_OK)==0) return 0;
+
+    strcpy(dir,path);
+    j=cont_slash(path);
+
+    // File in folder
     if(j>1)
     {
         for(i=0,s=0;i<j;s++)
         {
-            if(ret[s]=='/' || ret[s]=='\\')i++;
+            if(dir[s]=='/' || dir[s]=='\\')
+            {
+
+                i++;
+                temp=dir[s];
+                dir[s]='\0';
+                mkdir(dir);
+                dir[s]=temp;
+            }
         }
-        ret[s-1]='\0';
+        dir[s-1]='\0';
+        if(print_info_level>2) printf("Make dir [%s]\r\n",dir);
     }
-    return ret;
+    return 1;
 }
 
 int check_files_details(char *genFileName,char *var,char var_c,char *doc,char doc_c)
@@ -428,45 +444,35 @@ int check_files_details(char *genFileName,char *var,char var_c,char *doc,char do
 
     for(i=0;i<var_c;i++)
     {
-        if(access(var+(i*SIZE_OF_NAME),F_OK)!=0)
-        {
-            if(print_info_level>0)printf("Cant access to file [%s]\r\n",var+(i*SIZE_OF_NAME));
-            return 3;
-        }
-        else
+        if(access(var+(i*SIZE_OF_NAME),F_OK)==0)
         {
             stat(var+(i*SIZE_OF_NAME),&filestat);
             TTime=filestat.st_mtime;
             if(TTime>fTime)fTime=TTime;
         }
+        else
+        {
+            if(print_info_level>0)printf("Cant access to file [%s]\r\n",var+(i*SIZE_OF_NAME));
+            return 3;
+        }
     }
 
     for(i=0;i<doc_c;i++)
     {
-        if(access(doc+(i*SIZE_OF_NAME),F_OK)!=0)
-        {
-            if(print_info_level>0)printf("Cant access to file [%s]\r\n",doc+(i*SIZE_OF_NAME));
-            return 3;
-        }
-        else
+        if(access(doc+(i*SIZE_OF_NAME),F_OK)==0)
         {
             stat(doc+(i*SIZE_OF_NAME),&filestat);
             TTime=filestat.st_mtime;
             if(TTime>fTime)fTime=TTime;
         }
+        else
+        {
+            if(print_info_level>0)printf("Cant access to file [%s]\r\n",doc+(i*SIZE_OF_NAME));
+            return 3;
+        }
     }
 
-    if(access(genFileName,F_OK)!=0)
-    {
-        if(cont_slash(genFileName)>1)
-        {
-            char*dir=get_dir(genFileName);
-            if(print_info_level>2)printf("Make dir [%s]\r\n",dir);
-            mkdir(dir);
-            free(dir);
-        }
-        return 0;
-    }
+    if(check_dir(genFileName)) return 0;
 
     stat(genFileName,&filestat);
     gTime=filestat.st_mtime;
@@ -476,6 +482,7 @@ int check_files_details(char *genFileName,char *var,char var_c,char *doc,char do
         if(print_info_level>0)printf("File [%s] Already up to date!\r\n",genFileName);
         return 2;
     }
+
     return 0;
 }
 
