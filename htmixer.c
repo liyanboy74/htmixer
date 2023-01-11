@@ -324,7 +324,7 @@ my_buff_s* cheack_loops(my_buff_s* buff)
         loop_p=0;
         sscanf(p+2,"FOR(%d,%d,%d)",&loop_s,&loop_e,&loop_p);
 
-        if(print_info_level>2)printf("FOR Detected! - [%d] - [%d,%d,%d]\r\n",l,loop_s,loop_e,loop_p);
+        if(print_info_level>2)printf("FOR Detected! - [%ld] - [%d,%d,%d]\r\n",l,loop_s,loop_e,loop_p);
 
         for(loop_c=loop_s;loop_c!=loop_e;)
         {
@@ -402,7 +402,7 @@ int make_dir(char * path)
     #if defined(_WIN32)
     return mkdir(path);
     #else
-    return mkdir(path, 0777); // notice that 777 is different than 0777
+    return mkdir(path, 0777);
     #endif
 }
 
@@ -510,7 +510,7 @@ int main(int argc,char* argv[])
 
     my_buff_s* buff=my_buff_init();
 
-    if(print_info_level>2)printf("Buff init OK - [%d]\r\n",buff->len);
+    if(print_info_level>2)printf("Buff init OK - [%ld]\r\n",buff->len);
 
     for(j=1;argc>j;j++)
     {
@@ -570,7 +570,7 @@ int main(int argc,char* argv[])
             cat_and_catch_files(buff,doc[j]);
         }
 
-        if(print_info_level>2) printf("Cat Buff len is %d Byte.\r\n",buff->len);
+        if(print_info_level>2) printf("Cat Buff len is %ld Byte.\r\n",buff->len);
 
         buff=replace_loop_counter_val(buff);
 
