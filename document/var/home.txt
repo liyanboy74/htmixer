@@ -79,10 +79,12 @@ Generate :
 }}
 ------------------------------------
 {{PAGE-SEG-TXT-2
-<p>Deployment use <a href="https://pypi.org/project/ghp-import/">ghp-import</a> for <a href="https://pages.github.com/">Github Pages</a>.</p>
-Deployment :
+<p>Deployment use <a href="https://pypi.org/project/ghp-import/">ghp-import</a> for <a href="https://pages.github.com/">Github Pages</a>
+ or use <a href="https://github.com/actions/deploy-pages">Github actions deploy pages</a> for automation generate and deployment.</p>
+Deployment using ghp-import : (commented in Makefile)
 <div {{TERMINAL-STYLE}}>make deploy</div>
 <p>You can add <b>CNAME</b> by editing <b>Deploy</b> command in <a href="https://github.com/liyanboy74/htmixer/blob/main/example/Makefile.mk">Makefile</a>.</p>
+<p>Deployment using Github actions: <a href="https://github.com/liyanboy74/htmixer/tree/main/.github/workflows">Example</a> .</p>
 }}
 ------------------------------------
 {{PAGE-SEG-TXT-1
