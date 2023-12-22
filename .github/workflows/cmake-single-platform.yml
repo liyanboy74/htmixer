@@ -40,6 +40,9 @@ jobs:
     - name: Install
       run: cmake --install ${{github.workspace}}/build 
 
+    - name: Check version
+      run: htmixer --version  
+
     - name: Make Document
       run: cd document && make && cd ..
 
