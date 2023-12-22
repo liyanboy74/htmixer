@@ -40,13 +40,6 @@ COMMANDS:
 -?,-h,--help    Help            Print this list
 ```
 
-### Example Generate & Deploy
-```
-cd ../example/01
-make
-make deploy
-```
-
 ### Sitemap
 Use [SMG](https://github.com/liyanboy74/smg) for generate Sitemap.
 
