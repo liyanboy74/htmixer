@@ -1,8 +1,8 @@
 # Makefile Template for HTMixer
 # by liyanboy74
 
-htmixer		 =	"htmixer"
-generate-dir =	out
+htmixer		 =	htmixer
+generate-dir =	gh-pages
 
 default : generate
 ##################################### GENARATE ########################################
@@ -13,8 +13,9 @@ default : generate
 # Start Generate Static Web Pages
 generate :
 # Run Mixer
-	$(htmixer) ./$(generate-dir)/index.html -d ./doc.html -v ./var.txt
-
+	$(htmixer) ./$(generate-dir)/index.html -d ./doc/home.html -v ./var/home.txt
+# Copy Doc
+	cp -rn ./doc/htmixer.png ./$(generate-dir)/htmixer.png
 
 ##################################### DEPLOY ##########################################
 # Deploy on Github Pages, branch [gh-pages]
