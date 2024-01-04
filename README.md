@@ -1,7 +1,7 @@
 # HTMixer
 HTMixer is a Static HTML page generator. This tool can combine different pages and add content to them.
 Content can be specific to one or more templates.
-This tool is written in C language and can be used for any file, but customized for Github Pages. 
+This tool is written in C language and can be used for any text file, but customized for Github Pages. 
 
 [Read More](https://liyanboy74.github.io/htmixer/)
 
