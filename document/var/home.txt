@@ -127,7 +127,7 @@ Example:
 </div>
 <br>
 
-<p>Firs value in loop parametr can be a variable.</p>
+<p>First value in loop parametr can be a variable.</p>
 Example for blog post:
 <div {{CODE-STYLE}}>
 {{ FOR({{ POST-COUNT}},0,-1)
