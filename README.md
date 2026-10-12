@@ -42,6 +42,3 @@ COMMANDS:
 
 ### Sitemap
 Use [SMG](https://github.com/liyanboy74/smg) for generate Sitemap.
-
-### Trusted By
-- [IOElectro](https://github.com/ioelectro/ioelectro.github.io) 
